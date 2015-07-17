@@ -1,0 +1,414 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <property name="now" value="now()" dbms="mysql" />
+
+    <changeSet author="obi" id="inital-schema">
+        <!-- User table -->
+        <createTable tableName="USER">
+            <column name="User_Id" type="bigint(20) unsigned" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="User_UUID" type="varchar(50)">
+                <constraints nullable="false" />
+            </column>
+            <column name="First_Name" type="varchar(60)" >
+                <constraints nullable="false" />
+            </column>
+            <column name="Last_Name" type="varchar(60)" >
+                <constraints nullable="false" />
+            </column>
+            <column name="Email" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="Password" type="varchar(100)">
+                <constraints nullable="false" />
+            </column>
+            <column name="Active" type="char(1)" defaultValue="N">
+                <constraints nullable="false" />
+            </column>
+            <column name="Created_By" type="varchar(50)" />
+            <column name="Created_Dt" type="timestamp" />
+            <column name="Last_Updated_By" type="varchar(50)" />
+            <column name="Last_Updated_Dt" type="timestamp" />
+        </createTable>
+
+        <!-- TIME_RESTRICTION_PROFILE table -->
+        <createTable tableName="TIME_RESTRICTION_PROFILE">
+            <column name="Time_Restriction_Profile_Id" type="bigint(10) unsigned" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>            
+            <column name="Profile_Name" type="varchar(50)" >
+                <constraints nullable="false"/>
+            </column>            
+
+            <column name="Created_By" type="varchar(50)" />
+            <column name="Created_Dt" type="timestamp" />
+            <column name="Last_Updated_By" type="varchar(50)" />
+            <column name="Last_Updated_Dt" type="timestamp" />
+        </createTable> 
+        
+        <!-- DATA_LIMIT_RANGE table -->
+        <createTable tableName="DATA_LIMIT_RANGE">
+            <column name="Data_Limit_Range_Id" type="bigint(10) unsigned" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="Minimum" type="bigint(5)" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="Maximum" type="bigint(5)" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="Unit" type="varchar(10)" >
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="Created_By" type="varchar(50)" />
+            <column name="Created_Dt" type="timestamp" />
+            <column name="Last_Updated_By" type="varchar(50)" />
+            <column name="Last_Updated_Dt" type="timestamp" />
+        </createTable> 
+    
+        <!-- FAMILY_MEMBER table -->
+        <createTable tableName="FAMILY_MEMBER">
+            <column name="Family_Member_Id" type="bigint(20) unsigned" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="User_UUID" type="varchar(50)">
+                <constraints nullable="false" />
+            </column>
+            <column name="Family_Member_UUID" type="varchar(50)">
+                <constraints nullable="false" />
+            </column>
+            
+            <!-- Restriction Tab -->
+            <column name="Family_Member_Name" type="varchar(50)">
+                <constraints nullable="false" />
+            </column>
+            <column name="Device_Name" type="varchar(50)">
+                <constraints nullable="true" />
+            </column>
+            <column name="Image" type="varchar(150)">
+                <constraints nullable="true" />
+            </column>            
+            <column name="Restriction_Type" type="varchar(10)">
+                <constraints nullable="false" />
+            </column>
+            <column name="Block_Advertisment" type="char(1)" defaultValue="Y">
+                <constraints nullable="false" />
+            </column>
+            <column name="Enable_Safe_Searching" type="char(1)" defaultValue="Y">
+                <constraints nullable="false" />
+            </column>
+            <column name="Website_Restriction" type="char(1)" defaultValue="N">
+                <constraints nullable="false" />
+            </column>
+            
+            <!-- Time Permission -->
+            <column name="Enable_Time_Restriction" type="char(1)" defaultValue="Y">
+                <constraints nullable="false" />
+            </column>
+            <column name="Time_Restriction_Profile_Id" type="bigint(10) unsigned">
+                <constraints foreignKeyName="fk_time_restriction_profile_id" references="TIME_RESTRICTION_PROFILE(Time_Restriction_Profile_Id)"/>
+            </column>
+           
+            <!-- App Blocking -->
+            <column name="Enable_App_Blocking" type="char(1)" defaultValue="Y">
+                <constraints nullable="false" />
+            </column>
+            <column name="App_Age_Rating_To_Always_Block" type="varchar(10)"></column>    
+                    
+            <column name="Enable_App_Blocking_On_Time_Profile" type="char(1)" defaultValue="Y">
+                <constraints nullable="false" />
+            </column>
+            <column name="App_Age_Rating_To_Block" type="varchar(10)"></column>
+            
+            <!-- Celluler Data Limit -->
+            <column name="Enable_Data_Limit" type="char(1)" defaultValue="Y">
+                <constraints nullable="false" />
+            </column>
+            <column name="Data_Limit_Range_Id" type="bigint(10) unsigned">
+                <constraints foreignKeyName="fk_data_limit_range_id" references="DATA_LIMIT_RANGE(Data_Limit_Range_Id)"/>
+            </column>
+            
+            <column name="Created_By" type="varchar(50)" />
+            <column name="Created_Dt" type="timestamp" />
+            <column name="Last_Updated_By" type="varchar(50)" />
+            <column name="Last_Updated_Dt" type="timestamp" />
+        </createTable> 
+        
+        <!-- BLOCKED_WEBSITE table -->
+        <createTable tableName="BLOCKED_WEBSITE">
+            <column name="Blocked_Website_Id" type="bigint(20) unsigned" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="Family_Member_UUID" type="varchar(50)" >
+                <constraints nullable="false" />
+            </column>
+            <column name="Website_Address" type="varchar(150)">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="Created_By" type="varchar(50)" />
+            <column name="Created_Dt" type="timestamp" />
+            <column name="Last_Updated_By" type="varchar(50)" />
+            <column name="Last_Updated_Dt" type="timestamp" />
+        </createTable> 
+        
+        <!-- APP_BLOCK_TIME_RESTRICTION_PROFILE table -->
+        <createTable tableName="TIME_SETUP">
+            <column name="Time_Setup_Id" type="bigint(20) unsigned" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="Family_Member_UUID" type="varchar(50)" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="Start_Time" type="varchar(10)" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="End_Time" type="varchar(10)" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="Repeated" type="varchar(15)" >
+                <constraints nullable="false"/>
+            </column>           
+
+            <column name="Created_By" type="varchar(50)" />
+            <column name="Created_Dt" type="timestamp" />
+            <column name="Last_Updated_By" type="varchar(50)" />
+            <column name="Last_Updated_Dt" type="timestamp" />
+        </createTable> 
+        
+        <!-- APP_BLOCK_TIME_RESTRICTION_PROFILE table -->
+        <createTable tableName="APP_BLOCK_TIME_RESTRICTION_PROFILE">
+            <column name="App_Block_Time_Profile_Id" type="bigint(20) unsigned" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="Family_Member_UUID" type="varchar(50)" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="Time_Restriction_Profile_Id" type="bigint(10) unsigned">
+                <constraints foreignKeyName="fk_app_blocking_profile_id" references="TIME_RESTRICTION_PROFILE(Time_Restriction_Profile_Id)"/>
+            </column>     
+
+            <column name="Created_By" type="varchar(50)" />
+            <column name="Created_Dt" type="timestamp" />
+            <column name="Last_Updated_By" type="varchar(50)" />
+            <column name="Last_Updated_Dt" type="timestamp" />
+        </createTable> 
+    </changeSet>
+    <changeSet author="Pankaj Patel" id="dropForeignKeyAndChangeColumnNmae-Time_Restriction_Profile">
+        <dropForeignKeyConstraint baseTableName="FAMILY_MEMBER" constraintName="fk_time_restriction_profile_id" />
+        <dropIndex  tableName="FAMILY_MEMBER" indexName="fk_time_restriction_profile_id"/>
+        <renameColumn tableName="FAMILY_MEMBER" newColumnName="Time_Restriction_Profile" oldColumnName="Time_Restriction_Profile_Id" columnDataType="varchar(50)" />
+    </changeSet>
+    <changeSet author="Pankaj Patel" id="dropColumns-Enable_Data_Limit">    
+        <dropForeignKeyConstraint baseTableName="FAMILY_MEMBER" constraintName="fk_data_limit_range_id" />    
+        <dropIndex  tableName="FAMILY_MEMBER" indexName="fk_data_limit_range_id"/>
+        <dropColumn tableName="FAMILY_MEMBER" columnName="Data_Limit_Range_Id"/>
+        <dropColumn tableName="FAMILY_MEMBER" columnName="Enable_Data_Limit"/>
+    </changeSet>   
+    
+    <!--  changeSet author="Pankaj Patel" id="insert_initial_data">
+		<sqlFile dbms="mysql" encoding="utf8" endDelimiter=";" path="initial_data.sql" relativeToChangelogFile="true" splitStatements="true" stripComments="true" />
+	</changeSet>
+	-->
+	<changeSet author="Pankaj Patel" id="add_time_setup_columns_into_family_members">    
+    	<addColumn tableName="FAMILY_MEMBER">
+    		 <column name="TR_Start_Time" type="varchar(10)" afterColumn="Time_Restriction_Profile"/>
+    	</addColumn>
+    	<addColumn tableName="FAMILY_MEMBER">
+    		 <column name="TR_End_Time" type="varchar(10)" afterColumn="TR_Start_Time"/>
+    	</addColumn>
+    	<addColumn tableName="FAMILY_MEMBER">
+    		 <column name="TR_Repeated" type="varchar(10)" afterColumn="TR_End_Time"/>
+    	</addColumn>
+	</changeSet>
+	
+	<changeSet author="Pankaj Patel" id="drop_tables_data_limit_rage_and_time_setup">    
+    	 <dropTable tableName="TIME_SETUP"/>
+    	 <dropTable tableName="DATA_LIMIT_RANGE"/>
+	</changeSet>
+
+    <changeSet author="Joe Zimmerlin" id="add_mdm_model">
+        <!-- Add PIN to user table -->
+        <addColumn tableName="USER">
+             <column name="PIN" type="varchar(10)" />
+        </addColumn>
+
+        <!-- Device table -->
+        <createTable tableName="DEVICE">
+            <column name="Id" type="bigint(20) unsigned" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="User_Id" type="bigint(20) unsigned">
+                <constraints foreignKeyName="FK_DEVICE_USER_ID" references="USER(User_Id)" nullable="false" />
+            </column>
+            <column name="Device_UUID" type="varchar(50)">
+                <constraints nullable="false" />
+            </column>
+            <column name="UDID" type="varchar(50)" />
+            <column name="Push_Magic" type="varchar(100)" />
+            <column name="Device_Token" type="varchar(100)" />
+            <column name="Unlock_Token" type="varchar(4000)" />
+            <column name="Device_Name" type="varchar(255)" />
+            <column name="IP" type="varchar(50)" />
+            <column name="Phone_Number" type="varchar(30)" />
+            <column name="Model_Name" type="varchar(255)" />
+            <column name="OS_Version" type="varchar(30)" />
+            <column name="Owner" type="varchar(255)" />
+            <column name="Location" type="varchar(255)" />
+            <column name="Geo" type="varchar(50)" />
+            <column name="Active" type="char(1)">
+                <constraints nullable="false" />
+            </column>
+            <column name="Status" type="varchar(30)" />
+            <column name="Created_By" type="varchar(50)" />
+            <column name="Created_Dt" type="timestamp" />
+            <column name="Last_Updated_By" type="varchar(50)" />
+            <column name="Last_Updated_Dt" type="timestamp" />
+            <column name="Updated_Desc" type="varchar(500)" />
+        </createTable>
+
+        <!-- Command table -->
+        <createTable tableName="COMMAND">
+            <column name="Id" type="bigint(20) unsigned" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="Device_Id" type="bigint(20) unsigned">
+                <constraints nullable="false" />
+            </column>
+            <column name="Command_UUID" type="varchar(50)">
+                <constraints nullable="false" />
+            </column>
+            <column name="Command_Name" type="varchar(50)" />
+            <column name="Request_Type" type="varchar(50)" />
+            <column name="Status" type="varchar(30)" />
+            <column name="Payload" type="text" />
+            <column name="Identifier" type="varchar(100)" />
+            <column name="Queued_Dt" type="timestamp" />
+            <column name="Sent_Dt" type="timestamp" />
+            <column name="Response_Dt" type="timestamp" />
+        </createTable>
+
+        <!-- Command queries collection table -->
+        <createTable tableName="COMMAND_QUERIES">
+            <column name="Command_Id" type="bigint(20) unsigned">
+                <constraints nullable="false" />
+            </column>
+            <column name="Query" type="varchar(255)" />
+        </createTable>
+
+        <!-- Command responses collection table -->
+        <createTable tableName="COMMAND_RESPONSES">
+            <column name="Command_Id" type="bigint(20) unsigned">
+                <constraints nullable="false" />
+            </column>
+            <column name="Name" type="varchar(255)" />
+            <column name="Value" type="varchar(4000)" />
+        </createTable>
+
+        <!-- Device command queue ordered mapping table -->
+        <createTable tableName="DEVICE_COMMAND_QUEUE">
+            <column name="Device_Id" type="bigint(20) unsigned">
+                <constraints nullable="false" />
+            </column>
+            <column name="Command_Id" type="bigint(20) unsigned">
+                <constraints nullable="false" />
+            </column>
+            <column name="Queue_Idx" type="int(10) unsigned">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+
+        <!-- Profile table -->
+        <createTable tableName="PROFILE">
+            <column name="Id" type="bigint(20) unsigned" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="Device_Id" type="bigint(20) unsigned">
+                <constraints nullable="false" />
+            </column>
+            <column name="Identifier" type="varchar(100)" />
+            <column name="PIN" type="varchar(10)" />
+            <column name="Attributes" type="text" />
+        </createTable>
+    </changeSet>
+
+    <changeSet author="Joe Zimmerlin" id="add_auth_model">
+        <!-- Add username to user table -->
+        <addColumn tableName="USER">
+            <column name="Username" type="varchar(255)" />
+        </addColumn>
+
+        <!-- Composite access token table -->
+        <createTable tableName="COMPOSITE_ACCESS_TOKEN">
+            <column name="ACCESS_TOKEN" type="varchar(100)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="AUTHENTICATION_KEY" type="varchar(100)" />
+            <column name="ACCESS_TOKEN_VALUE" type="varchar(100)" />
+            <column name="ACCESS_TOKEN_TYPE" type="varchar(50)" />
+            <column name="ACCESS_TOKEN_EXPIRATION" type="timestamp" />
+            <column name="ACCESS_TOKEN_SCOPE" type="varchar(255)" />
+            <column name="ACCESS_TOKEN_ADDITIONAL_INFO" type="varchar(255)" />
+            <column name="REFRESH_TOKEN_VALUE" type="varchar(100)" />
+            <column name="REFRESH_TOKEN_EXPIRATION" type="timestamp" />
+            <column name="CLIENT_AUTH_APPROVAL_PARAMS" type="varchar(255)" />
+            <column name="CLIENT_AUTH_APPROVED" type="char(1)" />
+            <column name="CLIENT_AUTH_AUTHORITIES" type="varchar(1000)" />
+            <column name="CLIENT_AUTH_AUTHORIZATION_PARAMS" type="varchar(1000)" />
+            <column name="CLIENT_AUTH_CLIENT_ID" type="varchar(100)" />
+            <column name="CLIENT_AUTH_REDIRECT_URI" type="varchar(1000)" />
+            <column name="CLIENT_AUTH_RESOURCE_IDS" type="varchar(255)" />
+            <column name="CLIENT_AUTH_SCOPE" type="varchar(255)" />
+            <column name="USER_AUTH_TYPE" type="varchar(50)" />
+            <column name="USER_AUTHENTICATED" type="char(1)" />
+            <column name="USER_AUTHORITIES" type="varchar(1000)" />
+            <column name="USER_CLIENT_ID" type="varchar(100)" />
+            <column name="USER_CLIENT_SECRET" type="varchar(100)" />
+            <column name="USER_CREDENTIALS" type="varchar(1000)" />
+            <column name="USER_DETAILS" type="varchar(4000)" />
+            <column name="USER_NAME" type="varchar(100)" />
+            <column name="USER_PRINCIPAL" type="varchar(255)" />
+        </createTable>
+    </changeSet>
+    
+    <!-- FEEDBACK table -->
+    <changeSet author="Pankaj Patel" id="create_feedback_table">    
+        <createTable tableName="FEEDBACK">
+            <column name="Feedback_Id" type="bigint(20) unsigned" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="User_UUID" type="varchar(50)" ></column>
+            <column name="Email" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="Comments" type="varchar(1000)">
+                <constraints nullable="false" />
+            </column>
+            <column name="Created_By" type="varchar(50)" />
+            <column name="Created_Dt" type="timestamp" />
+            <column name="Last_Updated_By" type="varchar(50)" />
+            <column name="Last_Updated_Dt" type="timestamp" />
+        </createTable>         
+     </changeSet>
+     
+    <changeSet author="Pankaj Patel" id="add_time_columns_into_time_restriction_profile">    
+    	<addColumn tableName="TIME_RESTRICTION_PROFILE">
+    		 <column name="Start_Time" type="varchar(10)" afterColumn="Profile_Name"/>
+    		 <column name="End_Time" type="varchar(10)" afterColumn="Start_Time"/>
+    		 <column name="Repeated" type="varchar(10)" afterColumn="End_Time"/>
+    		 <column name="Family_Member_UUID" type="varchar(50)"></column>
+    	</addColumn>
+	</changeSet>
+	
+	<changeSet author="Pankaj Patel" id="drop_time_restriction_columns_from_family_members">   
+		<dropColumn tableName="FAMILY_MEMBER" columnName="Time_Restriction_Profile"/>
+    	<dropColumn tableName="FAMILY_MEMBER" columnName="TR_Start_Time"/>
+        <dropColumn tableName="FAMILY_MEMBER" columnName="TR_End_Time"/>
+        <dropColumn tableName="FAMILY_MEMBER" columnName="TR_Repeated"/>
+	</changeSet>
+</databaseChangeLog>
